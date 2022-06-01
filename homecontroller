@@ -1,0 +1,134 @@
+package mypkg;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import mypkg.entity.Product;
+
+
+@RestController
+public class HomeController {
+	
+	@Autowired
+	
+	private RestTemplate restTemplate;
+	
+	
+	@GetMapping("/home")
+	public ModelAndView home()
+	{
+	String prod=restTemplate.getForObject("http://PRODUCT-MICROSERVICE/products", String.class);
+	ModelAndView mv=new ModelAndView();
+	mv.addObject("prod", prod);
+	mv.setViewName("chk");
+	return mv;
+		//System.out.println(productPageContent);
+		//return productPageContent;
+	}
+	
+	
+	@GetMapping("/add/1")
+	public String add()
+	{
+		
+//		String json=" ["
+//				+ "{\"rollNumber\":21 , \"firstName\":\"Saurabh\" , \"lastName\":\"Gupta\"}, "
+//				+ "{\"rollNumber\":22 , \"firstName\":\"Abhishek\" , \"lastName\":\"Garg\"}"
+//				+ "]";
+//				System.out.println(json);
+//				try
+//				{
+//				ObjectMapper mapper = new ObjectMapper();
+//				//Convereted to Type as array
+//				StudentDetail[] students= mapper.readValue(json,  StudentDetail[].class );
+//				System.out.println(students);
+//				}
+//				catch(IOException ex)
+//				{
+//				ex.printStackTrace();
+//				}
+//				catch(Exception ex)
+//				{
+//				ex.printStackTrace();
+//				}
+		
+//		List<Product> prod;
+//		
+// prod=(List<Product>) 
+		System.out.println(restTemplate.getForObject("http://ADD-MICROSERVICE/pid/1", Product.class));
+		Product p=restTemplate.getForObject("http://ADD-MICROSERVICE/pid/1", Product.class);
+		return p.toString();
+		//restTemplate.getForObject("http://ADD-MICROSERVICE/products", Product.class);
+//	ModelAndView mv=new ModelAndView();
+//	mv.addObject("prod", prod);
+//	mv.setViewName("chk");
+//	return mv;
+		//System.out.println(productPageContent);
+		//return productPageContent;
+	}
+
+
+
+@RequestMapping("addps")
+public ModelAndView addps()
+{
+	ResponseEntity<String> re=restTemplate.getForEntity("http://ADD-MICROSERVICE/products", String.class);
+	String body=re.getBody();
+	HttpHeaders header=re.getHeaders();
+	System.out.println(body);
+	System.out.println(header);
+	
+	
+	
+ModelAndView mv=new ModelAndView();
+mv.addObject("prod", body);
+mv.setViewName("chk");
+return mv;
+	
+}
+
+@RequestMapping("json")
+public ModelAndView json()
+{
+	RestTemplate rt=new RestTemplate();
+	String re=rt.getForObject("https://jsonplaceholder.typicode.com/posts", String.class);
+	
+	System.out.println(re);
+	
+	
+	
+ModelAndView mv=new ModelAndView();
+mv.addObject("prod", re);
+mv.setViewName("chk");
+return mv;
+	
+}
+
+@RequestMapping("jsonlist")
+public ModelAndView jsonlist()
+{
+	RestTemplate rt=new RestTemplate();
+	List re=rt.getForObject("https://jsonplaceholder.typicode.com/posts", List.class);
+	re.forEach(i->{System.out.println(i);});
+	
+	
+	
+	
+ModelAndView mv=new ModelAndView();
+mv.addObject("prod", re);
+mv.setViewName("chk");
+return mv;
+	
+}
+}
+
